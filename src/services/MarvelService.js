@@ -22,6 +22,10 @@ class MarvelService {
       `${this._apiBase}characters/${id}?${this._apiKey}`
     );
   };
+
+  _transformCharacter = (res) =>{
+
+  };
 }
 
 export default MarvelService;
