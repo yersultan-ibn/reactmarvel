@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
+
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
-import "./charList.scss";
 import useMarvelService from "../../services/MarvelService";
+import "./charList.scss";
 
 const CharList = (props) => {
   const [charList, setCharList] = useState([]);
@@ -19,7 +20,6 @@ const CharList = (props) => {
 
   const onRequest = (offset, initial) => {
     initial ? setNewItemLoading(false) : setNewItemLoading(true);
-
     getAllCharacters(offset).then(onCharListLoaded);
   };
 
@@ -28,8 +28,9 @@ const CharList = (props) => {
     if (newCharList.length < 9) {
       ended = true;
     }
+
     setCharList((charList) => [...charList, ...newCharList]);
-    setNewItemLoading((setNewItemLoading) => false);
+    setNewItemLoading((newItemLoading) => false);
     setOffset((offset) => offset + 9);
     setCharEnded((charEnded) => ended);
   };
@@ -93,6 +94,8 @@ const CharList = (props) => {
 
   const errorMessage = error ? <ErrorMessage /> : null;
   const spinner = loading && !newItemLoading ? <Spinner /> : null;
+
+
 
   return (
     <div className="char__list">
