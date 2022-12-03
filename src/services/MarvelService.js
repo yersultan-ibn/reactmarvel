@@ -1,8 +1,11 @@
-class MarvelService {
-  _apiBase = 'https://gateway.marvel.com:443/v1/public/';
+import { useHttp } from '../hooks/http.hook';
+
+const useMarvelService = () => {
+  const { loading, request, error } = useHttp();
+  const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
   // ЗДЕСЬ БУДЕТ ВАШ КЛЮЧ, ЭТОТ КЛЮЧ МОЖЕТ НЕ РАБОТАТЬ
-  _apiKey = 'apikey=c210cc7a83a2a69db5e35763811d8a76';
-  _baseOffset = 210;
+  const _apiKey = 'apikey=c210cc7a83a2a69db5e35763811d8a76';
+  const _baseOffset = 210;
 
   getResource = async (url) => {
     let res = await fetch(url);
@@ -39,6 +42,6 @@ class MarvelService {
       comics: char.comics.items,
     };
   };
-}
+};
 
 export default MarvelService;
