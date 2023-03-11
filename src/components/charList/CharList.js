@@ -1,8 +1,9 @@
-import { Component, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import MarvelService from "../../services/MarvelService";
 import "./charList.scss";
+import { PropTypes } from "prop-types";
 
 const CharList = (props) => {
   const [charList, setCharList] = useState([]);
@@ -98,5 +99,9 @@ const CharList = (props) => {
     </div>
   );
 };
+
+CharList.propTypes = {
+  onCharSelected: PropTypes.func
+}
 
 export default CharList;

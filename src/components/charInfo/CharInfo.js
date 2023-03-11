@@ -5,6 +5,7 @@ import MarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
 import Skeleton from "../skeleton/Skeleton";
 import ErrorMessage from "../errorMessage/ErrorMessage";
+import { PropTypes } from "prop-types";
 
 const CharInfo = (props) => {
   const [char, setChar] = useState(null);
@@ -100,6 +101,10 @@ const View = ({ char }) => {
       </ul>
     </>
   );
+};
+
+CharInfo.propTypes = {
+  charId: PropTypes.number,
 };
 
 export default CharInfo;
