@@ -1,32 +1,25 @@
+import { Component, useEffect, useState } from "react";
+import Spinner from "../spinner/Spinner";
+import ErrorMessage from "../errorMessage/ErrorMessage";
 import "./charList.scss";
-import { useEffect, useState } from "react";
-import MarvelService from "../../services/MarvelService";
-import { PropTypes } from "prop-types";
+import useMarvelService from "../../services/MarvelService";
 
 const CharList = (props) => {
-  const [char, setChar] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [charList, setCharList] = useState([]);
   const [newItemLoading, setNewItemLoading] = useState(false);
   const [offset, setOffset] = useState(210);
   const [charEnded, setCharEnded] = useState(false);
 
-  const marvelService = new MarvelService();
+  const { loading, error, getAllCharacters, clearError } = useMarvelService();
 
   useEffect(() => {
     onRequest();
   }, []);
 
-  const onRequest = (offset) => {
-    onCharListLoading();
-    marvelService
-      .getAllCharacters(offset)
-      .then(onCharListLoaded)
-      .catch(onCharError);
-  };
+  const onRequest = (offset, inital) => {
+    inital ? setNewItemLoading(false) : setNewItemLoading(true);
 
-  const onCharListLoading = () => {
-    setNewItemLoading(true);
+    getAllCharacters(offset).then(onCharListLoaded);
   };
 
   const onCharListLoaded = (newCharList) => {
@@ -34,33 +27,54 @@ const CharList = (props) => {
     if (newCharList.length < 9) {
       ended = true;
     }
-    setChar((char) => [...char, ...newCharList]);
-    setLoading((loading) => false);
+
+    setCharList((charList) => [...charList, ...newCharList]);
+    // setLoading((loading) => false);
     setNewItemLoading((newItemLoading) => false);
     setOffset((offset) => offset + 9);
     setCharEnded((charEnded) => ended);
   };
 
-  const onCharError = () => {
-    setLoading(false);
-    setError(true);
-  };
+  // Этот метод создан для оптимизации,
+  // чтобы не помещать такую конструкцию в метод render
+  function renderItems(arr) {
+    const items = arr.map((item) => {
+      let imgStyle = { objectFit: "cover" };
+      if (
+        item.thumbnail ===
+        "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg"
+      ) {
+        imgStyle = { objectFit: "unset" };
+      }
+
+      return (
+        <li
+          className="char__item"
+          key={item.id}
+          onClick={() => props.onCharSelected(item.id)}
+        >
+          <img src={item.thumbnail} alt={item.name} style={imgStyle} />
+          <div className="char__name">{item.name}</div>
+        </li>
+      );
+    });
+    // А эта конструкция вынесена для центровки спиннера/ошибки
+    return <ul className="char__grid">{items}</ul>;
+  }
+
+  // const { charList, loading, error, newItemLoading, offset } = this.state;
+
+  const items = renderItems(charList);
+
+  const errorMessage = error ? <ErrorMessage /> : null;
+  const spinner = loading ? <Spinner /> : null;
+  const content = !(loading || error) ? items : null;
+
   return (
     <div className="char__list">
-      <ul className="char__grid">
-        {char.map((item, i) => {
-          return (
-            <li
-              className="char__item"
-              key={i}
-              onClick={() => props.onCharSelected(item.id)}
-            >
-              <img src={item.thumbnail} alt="abyss" />
-              <div className="char__name">{item.name}</div>
-            </li>
-          );
-        })}
-      </ul>
+      {errorMessage}
+      {spinner}
+      {content}
       <button
         className="button button__main button__long"
         disabled={newItemLoading}
@@ -71,7 +85,5 @@ const CharList = (props) => {
     </div>
   );
 };
-CharList.propTypes = {
-  onCharSelected: PropTypes.func,
-};
+
 export default CharList;
