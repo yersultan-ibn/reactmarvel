@@ -1,25 +1,30 @@
-import AppHeader from "../appHeader/AppHeader";
-
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-import { MainPage, ComicsPage } from "../page";
+import { MainPage, ComicsPage, Page404, SingleComicPage } from "../page";
+import AppHeader from "../appHeader/AppHeader";
 
 const App = () => {
   return (
     <Router>
-      <Switch>
-        <div className="app">
-          <AppHeader />
-          <main>
-            <Route path="/" exact>
+      <div className="app">
+        <AppHeader />
+        <main>
+          <Switch>
+            <Route exact path="/">
               <MainPage />
             </Route>
-            <Route path="/comics" exact>
+            <Route exact path="/comics">
               <ComicsPage />
             </Route>
-          </main>
-        </div>
-      </Switch>
+            <Route exact path="/comics/:comicId">
+              <SingleComicPage />
+            </Route>
+            <Route path="*">
+              <Page404 />
+            </Route>
+          </Switch>
+        </main>
+      </div>
     </Router>
   );
 };
